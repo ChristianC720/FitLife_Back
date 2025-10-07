@@ -35,3 +35,24 @@ export const createWorkoutEntry = async (req, res, next) => {
     next(error);
   }
 };
+export const deleteWorkoutEntry = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    
+    const deleted = await historyService.deleteWorkoutEntry(id);
+    
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        error: 'Entrada no encontrada'
+      });
+    }
+    
+    res.json({
+      success: true,
+      message: 'Entrada eliminada del historial exitosamente'
+    });
+  } catch (error) {
+    next(error);
+  }
+};

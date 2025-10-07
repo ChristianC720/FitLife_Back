@@ -5,6 +5,7 @@ import {
   createPlan,
   updatePlan,
   deletePlan,
+  completePlan,
   addExerciseToPlan,
   updateExercise,
   deleteExercise
@@ -18,6 +19,7 @@ router.get('/:id', getPlanById);
 router.post('/', createPlan);
 router.put('/:id', updatePlan);
 router.delete('/:id', deletePlan);
+router.post('/:id/complete', completePlan); 
 
 // Rutas de ejercicios dentro de un plan
 router.post('/:planId/exercises', addExerciseToPlan);

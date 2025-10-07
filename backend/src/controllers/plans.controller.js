@@ -2,8 +2,21 @@ import * as plansService from '../services/plans.service.js';
 
 export const getAllPlans = async (req, res, next) => {
   try {
-    const { type, level, search } = req.query;
-    const plans = await plansService.getAllPlans({ type, level, search });
+    // CAMBIO: Extraer 'category' en lugar de 'type'
+    const { type, category, level, search } = req.query;
+    
+    console.log('🔍 Query params recibidos:', req.query); // DEBUG
+    
+    // Usar 'category' si existe, sino usar 'type'
+    const filters = {
+      type: category || type,
+      level,
+      search
+    };
+    
+    console.log('📦 Filtros procesados:', filters); // DEBUG
+    
+    const plans = await plansService.getAllPlans(filters);
     
     res.json({
       success: true,
@@ -168,6 +181,28 @@ export const deleteExercise = async (req, res, next) => {
     res.json({
       success: true,
       message: 'Ejercicio eliminado exitosamente'
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const completePlan = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    
+    const result = await plansService.completePlan(id);
+    
+    if (!result) {
+      return res.status(404).json({
+        success: false,
+        error: 'Plan no encontrado'
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: result,
+      message: 'Plan completado exitosamente'
     });
   } catch (error) {
     next(error);

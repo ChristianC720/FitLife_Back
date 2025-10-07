@@ -1,26 +1,36 @@
 import { supabase } from '../config/supabase.js';
 
 export const getAllPlans = async (filters = {}) => {
+  console.log('🔍 Filtros recibidos en service:', filters);
+  
   let query = supabase
     .from('exercise_plans')
     .select('*, plan_exercises(count)')
     .order('created_at', { ascending: false });
 
-  if (filters.type && filters.type !== 'all') {
+  if (filters.type && filters.type !== 'all' && filters.type.trim() !== '') {
+    console.log('✅ Aplicando filtro de tipo:', filters.type);
     query = query.eq('category', filters.type);
   }
 
-  if (filters.level && filters.level !== 'all') {
+  if (filters.level && filters.level !== 'all' && filters.level.trim() !== '') {
+    console.log('✅ Aplicando filtro de nivel:', filters.level);
     query = query.eq('level', filters.level);
   }
 
-  if (filters.search) {
+  if (filters.search && filters.search.trim() !== '') {
+    console.log('✅ Aplicando filtro de búsqueda:', filters.search);
     query = query.ilike('name', `%${filters.search}%`);
   }
 
   const { data, error } = await query;
 
-  if (error) throw error;
+  if (error) {
+    console.error('❌ Error en query:', error);
+    throw error;
+  }
+
+  console.log('📦 Planes encontrados:', data?.length);
 
   return data.map(plan => ({
     ...plan,
@@ -149,4 +159,50 @@ export const deleteExercise = async (exerciseId) => {
 
   if (error) throw error;
   return true;
+};
+
+export const completePlan = async (planId) => {
+  // 1. Actualizar el plan a "Completado"
+  const { data: plan, error: planError } = await supabase
+    .from('exercise_plans')
+    .update({
+      status: 'Completado',
+      progress: 100,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', planId)
+    .select()
+    .single();
+
+  if (planError) {
+    console.error('❌ Error al completar plan:', planError);
+    throw planError;
+  }
+
+  // 2. Crear entrada en el historial con fecha actual en formato ISO
+  const now = new Date();
+  
+  const { data: historyEntry, error: historyError } = await supabase
+    .from('workout_history')
+    .insert([{
+      name: plan.name,
+      plan_id: planId,
+      date: now.toISOString(), // Fecha en formato ISO completo
+      duration_minutes: parseInt(plan.duration) || null,
+      calories: null,
+    }])
+    .select()
+    .single();
+
+  if (historyError) {
+    console.error('❌ Error al crear historial:', historyError);
+    throw historyError;
+  }
+
+  console.log('✅ Plan completado y agregado al historial:', historyEntry);
+
+  return {
+    plan,
+    historyEntry
+  };
 };

@@ -49,3 +49,19 @@ function getAccentColor(name) {
   const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   return colors[hash % colors.length];
 }
+// ... código existente ...
+
+export const deleteWorkoutEntry = async (id) => {
+  const { error } = await supabase
+    .from('workout_history')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('❌ Error al eliminar entrada del historial:', error);
+    throw error;
+  }
+
+  console.log('✅ Entrada eliminada del historial:', id);
+  return true;
+};
