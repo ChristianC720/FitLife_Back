@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import plansRoutes from './routes/plans.routes.js';
 import historyRoutes from './routes/history.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import progressRoutes from './routes/progress.routes.js';
 
 // Cargar variables de entorno
 dotenv.config();
@@ -37,6 +38,7 @@ app.get('/api/health', (req, res) => {
 // Rutas principales
 app.use('/api/plans', plansRoutes);
 app.use('/api/history', historyRoutes);
+app.use('/api/progress', progressRoutes);
 
 // Ruta 404
 app.use('*', (req, res) => {
