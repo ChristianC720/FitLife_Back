@@ -1,8 +1,5 @@
 import { supabase } from '../config/supabase.js';
 
-/**
- * Obtener métricas diarias del usuario en un rango de fechas
- */
 export const getDailyMetrics = async (userId, days = 7) => {
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
@@ -18,9 +15,7 @@ export const getDailyMetrics = async (userId, days = 7) => {
   return data;
 };
 
-/**
- * Obtener resumen de estadísticas del usuario
- */
+
 export const getProgressSummary = async (userId, days = 7) => {
   const metrics = await getDailyMetrics(userId, days);
 
@@ -41,7 +36,6 @@ export const getProgressSummary = async (userId, days = 7) => {
   const avgWeight = metrics.reduce((sum, m) => sum + (parseFloat(m.weight) || 0), 0) / metrics.length;
   const avgCaloriesConsumed = metrics.reduce((sum, m) => sum + (m.calories_consumed || 0), 0) / metrics.length;
 
-  // Calcular cambio de peso (primera vs última medición)
   const firstWeight = parseFloat(metrics[0]?.weight || 0);
   const lastWeight = parseFloat(metrics[metrics.length - 1]?.weight || 0);
   const weightChange = lastWeight - firstWeight;
@@ -56,11 +50,9 @@ export const getProgressSummary = async (userId, days = 7) => {
   };
 };
 
-/**
- * Obtener distribución de ejercicios por categoría
- */
+
 export const getExerciseDistribution = async (userId) => {
-  // Obtener planes completados del historial
+ 
   const { data: history, error } = await supabase
     .from('workout_history')
     .select(`
@@ -75,12 +67,11 @@ export const getExerciseDistribution = async (userId) => {
     return [];
   }
 
-  // ⬇️ VALIDAR que history no sea null o vacío
   if (!history || history.length === 0) {
     return [];
   }
 
-  // Contar por categoría
+
   const categoryCounts = {};
   history.forEach(item => {
     const category = item.exercise_plans?.category || 'otros';
@@ -91,7 +82,7 @@ export const getExerciseDistribution = async (userId) => {
   
   if (total === 0) return [];
 
-  // Convertir a porcentajes
+ 
   return Object.entries(categoryCounts).map(([category, count]) => ({
     category,
     count,
@@ -99,9 +90,7 @@ export const getExerciseDistribution = async (userId) => {
   }));
 };
 
-/**
- * Obtener balance calórico diario
- */
+
 export const getCalorieBalance = async (userId, days = 7) => {
   const metrics = await getDailyMetrics(userId, days);
   
@@ -113,9 +102,7 @@ export const getCalorieBalance = async (userId, days = 7) => {
   }));
 };
 
-/**
- * Obtener tendencia de peso
- */
+
 export const getWeightTrend = async (userId, days = 30) => {
   const { data, error } = await supabase
     .from('user_daily_metrics')
@@ -132,9 +119,7 @@ export const getWeightTrend = async (userId, days = 30) => {
   }));
 };
 
-/**
- * Obtener metas del usuario
- */
+
 export const getUserGoals = async (userId) => {
   const { data, error } = await supabase
     .from('user_goals')
@@ -147,9 +132,7 @@ export const getUserGoals = async (userId) => {
   return data;
 };
 
-/**
- * Obtener progreso de metas
- */
+
 export const getGoalsProgress = async (userId) => {
   const goals = await getUserGoals(userId);
   
@@ -163,9 +146,7 @@ export const getGoalsProgress = async (userId) => {
   }));
 };
 
-/**
- * Crear o actualizar métrica diaria
- */
+
 export const upsertDailyMetric = async (userId, metricData) => {
   const { data, error } = await supabase
     .from('user_daily_metrics')
@@ -188,9 +169,7 @@ export const upsertDailyMetric = async (userId, metricData) => {
   return data;
 };
 
-/**
- * Crear nueva meta
- */
+
 export const createGoal = async (userId, goalData) => {
   const { data, error } = await supabase
     .from('user_goals')
@@ -210,9 +189,7 @@ export const createGoal = async (userId, goalData) => {
   return data;
 };
 
-/**
- * Actualizar meta
- */
+
 export const updateGoal = async (goalId, goalData) => {
   const { data, error } = await supabase
     .from('user_goals')

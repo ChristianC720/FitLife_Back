@@ -1,10 +1,6 @@
-/**
- * Middleware global para manejo de errores
- */
 export const errorHandler = (err, req, res, next) => {
-  console.error('❌ Error:', err);
+  console.error('Error:', err);
 
-  // Error de Supabase
   if (err.code) {
     return res.status(400).json({
       success: false,
@@ -13,7 +9,6 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Error de validación
   if (err.name === 'ValidationError') {
     return res.status(400).json({
       success: false,
@@ -22,7 +17,6 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Error genérico
   res.status(err.status || 500).json({
     success: false,
     error: err.message || 'Error interno del servidor'

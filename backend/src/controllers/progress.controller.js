@@ -1,12 +1,8 @@
 import * as progressService from '../services/progress.service.js';
 
-/**
- * Obtener resumen de progreso
- */
 export const getProgressSummary = async (req, res, next) => {
   try {
     const { days = 7 } = req.query;
-    // Por ahora usamos un userId fijo (después lo obtendremos de auth)
     const userId = '00000000-0000-0000-0000-000000000001';
     
     const summary = await progressService.getProgressSummary(userId, parseInt(days));
@@ -20,9 +16,6 @@ export const getProgressSummary = async (req, res, next) => {
   }
 };
 
-/**
- * Obtener métricas diarias
- */
 export const getDailyMetrics = async (req, res, next) => {
   try {
     const { days = 7 } = req.query;
@@ -39,9 +32,6 @@ export const getDailyMetrics = async (req, res, next) => {
   }
 };
 
-/**
- * Obtener distribución de ejercicios
- */
 export const getExerciseDistribution = async (req, res, next) => {
   try {
     const userId = '00000000-0000-0000-0000-000000000001';
@@ -57,9 +47,6 @@ export const getExerciseDistribution = async (req, res, next) => {
   }
 };
 
-/**
- * Obtener balance calórico
- */
 export const getCalorieBalance = async (req, res, next) => {
   try {
     const { days = 7 } = req.query;
@@ -76,9 +63,6 @@ export const getCalorieBalance = async (req, res, next) => {
   }
 };
 
-/**
- * Obtener tendencia de peso
- */
 export const getWeightTrend = async (req, res, next) => {
   try {
     const { days = 30 } = req.query;
@@ -95,9 +79,6 @@ export const getWeightTrend = async (req, res, next) => {
   }
 };
 
-/**
- * Obtener metas del usuario
- */
 export const getUserGoals = async (req, res, next) => {
   try {
     const userId = '00000000-0000-0000-0000-000000000001';
@@ -113,9 +94,6 @@ export const getUserGoals = async (req, res, next) => {
   }
 };
 
-/**
- * Obtener progreso de metas
- */
 export const getGoalsProgress = async (req, res, next) => {
   try {
     const userId = '00000000-0000-0000-0000-000000000001';
@@ -131,9 +109,6 @@ export const getGoalsProgress = async (req, res, next) => {
   }
 };
 
-/**
- * Crear o actualizar métrica diaria
- */
 export const upsertDailyMetric = async (req, res, next) => {
   try {
     const userId = '00000000-0000-0000-0000-000000000001';
@@ -151,9 +126,6 @@ export const upsertDailyMetric = async (req, res, next) => {
   }
 };
 
-/**
- * Crear nueva meta
- */
 export const createGoal = async (req, res, next) => {
   try {
     const userId = '00000000-0000-0000-0000-000000000001';
@@ -171,9 +143,6 @@ export const createGoal = async (req, res, next) => {
   }
 };
 
-/**
- * Actualizar meta
- */
 export const updateGoal = async (req, res, next) => {
   try {
     const { id } = req.params;

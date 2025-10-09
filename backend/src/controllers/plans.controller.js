@@ -2,19 +2,13 @@ import * as plansService from '../services/plans.service.js';
 
 export const getAllPlans = async (req, res, next) => {
   try {
-    // CAMBIO: Extraer 'category' en lugar de 'type'
     const { type, category, level, search } = req.query;
     
-    console.log('🔍 Query params recibidos:', req.query); // DEBUG
-    
-    // Usar 'category' si existe, sino usar 'type'
     const filters = {
       type: category || type,
       level,
       search
     };
-    
-    console.log('📦 Filtros procesados:', filters); // DEBUG
     
     const plans = await plansService.getAllPlans(filters);
     
