@@ -1,7 +1,7 @@
 import { supabase } from '../config/supabase.js';
 
 export const getAllPlans = async (filters = {}) => {
-  console.log('🔍 Filtros recibidos en service:', filters);
+  console.log(' Filtros recibidos en service:', filters);
   
   let query = supabase
     .from('exercise_plans')
@@ -9,28 +9,28 @@ export const getAllPlans = async (filters = {}) => {
     .order('created_at', { ascending: false });
 
   if (filters.type && filters.type !== 'all' && filters.type.trim() !== '') {
-    console.log('✅ Aplicando filtro de tipo:', filters.type);
+    console.log(' Aplicando filtro de tipo:', filters.type);
     query = query.eq('category', filters.type);
   }
 
   if (filters.level && filters.level !== 'all' && filters.level.trim() !== '') {
-    console.log('✅ Aplicando filtro de nivel:', filters.level);
+    console.log(' Aplicando filtro de nivel:', filters.level);
     query = query.eq('level', filters.level);
   }
 
   if (filters.search && filters.search.trim() !== '') {
-    console.log('✅ Aplicando filtro de búsqueda:', filters.search);
+    console.log(' Aplicando filtro de búsqueda:', filters.search);
     query = query.ilike('name', `%${filters.search}%`);
   }
 
   const { data, error } = await query;
 
   if (error) {
-    console.error('❌ Error en query:', error);
+    console.error(' Error en query:', error);
     throw error;
   }
 
-  console.log('📦 Planes encontrados:', data?.length);
+  console.log(' Planes encontrados:', data?.length);
 
   return data.map(plan => ({
     ...plan,
@@ -162,7 +162,7 @@ export const deleteExercise = async (exerciseId) => {
 };
 
 export const completePlan = async (planId) => {
-  // 1. Actualizar el plan a "Completado"
+  
   const { data: plan, error: planError } = await supabase
     .from('exercise_plans')
     .update({
@@ -175,11 +175,11 @@ export const completePlan = async (planId) => {
     .single();
 
   if (planError) {
-    console.error('❌ Error al completar plan:', planError);
+    console.error(' Error al completar plan:', planError);
     throw planError;
   }
 
-  // 2. Crear entrada en el historial con fecha actual en formato ISO
+  
   const now = new Date();
   
   const { data: historyEntry, error: historyError } = await supabase
@@ -187,7 +187,7 @@ export const completePlan = async (planId) => {
     .insert([{
       name: plan.name,
       plan_id: planId,
-      date: now.toISOString(), // Fecha en formato ISO completo
+      date: now.toISOString(),
       duration_minutes: parseInt(plan.duration) || null,
       calories: null,
     }])
@@ -195,11 +195,11 @@ export const completePlan = async (planId) => {
     .single();
 
   if (historyError) {
-    console.error('❌ Error al crear historial:', historyError);
+    console.error(' Error al crear historial:', historyError);
     throw historyError;
   }
 
-  console.log('✅ Plan completado y agregado al historial:', historyEntry);
+  console.log(' Plan completado y agregado al historial:', historyEntry);
 
   return {
     plan,

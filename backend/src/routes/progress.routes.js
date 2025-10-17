@@ -14,7 +14,7 @@ import {
 
 const router = express.Router();
 
-// Endpoints de consulta
+
 router.get('/summary', getProgressSummary);
 router.get('/metrics', getDailyMetrics);
 router.get('/distribution', getExerciseDistribution);
@@ -23,7 +23,7 @@ router.get('/weight', getWeightTrend);
 router.get('/goals', getUserGoals);
 router.get('/goals/progress', getGoalsProgress);
 
-// Endpoints de escritura
+
 router.post('/metrics', upsertDailyMetric);
 router.post('/goals', createGoal);
 router.put('/goals/:id', updateGoal);
