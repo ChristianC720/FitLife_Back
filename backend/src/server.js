@@ -3,6 +3,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import plansRoutes from './routes/plans.routes.js';
 import historyRoutes from './routes/history.routes.js';
+import nutritionRoutes from './routes/nutrition.routes.js';
+import commandsRoutes from './routes/commands.routes.js';
+import queriesRoutes from './routes/queries.routes.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import progressRoutes from './routes/progress.routes.js';
 
@@ -31,11 +34,12 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
-
-// Rutas principales
 app.use('/api/plans', plansRoutes);
 app.use('/api/history', historyRoutes);
 app.use('/api/progress', progressRoutes);
+app.use('/api/nutrition', nutritionRoutes);
+app.use('/api/commands', commandsRoutes);
+app.use('/api/queries', queriesRoutes);
 
 app.use('*', (req, res) => {
   res.status(404).json({

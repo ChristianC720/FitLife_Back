@@ -83,3 +83,18 @@ VALUES
   ('Fuerza Total', NOW() - INTERVAL '1 day', 42, 380),
   ('Cardio HIIT', NOW() - INTERVAL '2 days', 28, 420),
   ('Yoga Matutino', NOW() - INTERVAL '3 days', 20, 150);
+
+-- Tabla: meals (para la funcionalidad de nutrición)
+CREATE TABLE IF NOT EXISTS meals (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id TEXT,
+  name TEXT NOT NULL,
+  calories INTEGER,
+  protein NUMERIC,
+  carbs NUMERIC,
+  fats NUMERIC,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_meals_user_id ON meals(user_id);
+CREATE INDEX idx_meals_created_at ON meals(created_at DESC);
